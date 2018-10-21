@@ -55,14 +55,13 @@ function shuffle(array) {
             const firstIcon = opened[0].firstElementChild.classList;
             const secondIcon = opened[1].firstElementChild.classList;
             // Cards match
-           if (firstIcon.value == secondIcon.value) { 
-               console.log("MATCH");             
+           if (firstIcon.value == secondIcon.value) {           
                 firstCard.add('match');
                 secondCard.add('match');
                 // Reset the opened array
                 opened = [];
            }
-           // Cards don't match; Hide after showing for 2s
+           // Cards don't match; Hide after showing briefly
            else {
                setTimeout(function() {
                    for (const card of opened) {
