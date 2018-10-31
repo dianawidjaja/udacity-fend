@@ -2,19 +2,18 @@
 
 ## Table of Contents
 
-* [Instructions](#instructions)
-* [Contributing](#contributing)
+* [How To Play](#how-to-play)
+* [Game Dependencies](#game-dependencies)
 
-## Instructions
+## How To Play
 
-The starter project has some HTML and CSS styling to display a static version of the Memory Game project. You'll need to convert this project from a static project to an interactive one. This will require modifying the HTML and CSS files, but primarily the JavaScript file.
+Challenge your memory with this classic memory game. When the game loads, be ready to start flipping the cards as 
+the timer starts ticking. Flip 2 similar cards to get a match. You win when all cards are matched! 
+Match your cards in 10 moves or less to get a 3-star rating. Match your cards in 20 moves or less to get a 2-star rating.
 
-To get started, open `js/app.js` and start building out the app's functionality
+## Game Dependencies
 
-For specific, detailed instructions, look at the project instructions in the [Udacity Classroom](https://classroom.udacity.com/me).
-
-## Contributing
-
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
-
-For details, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+This game is powered by the following libraries.
+  * [Font Awesome](https://fontawesome.com/)
+  * [Bootstrap](https://getbootstrap.com/)
+  * [Easy Timer](https://albert-gonzalez.github.io/easytimer.js/)

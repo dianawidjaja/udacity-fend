@@ -1,38 +1,67 @@
-/*
+/**
  * Create a list that holds all of your cards
+ */
+let cardDeck = ['fa-anchor', 'fa-anchor', 'fa-bicycle', 'fa-bicycle',
+                'fa-bolt', 'fa-bolt', 'fa-bomb', 'fa-bomb',
+                'fa-cube', 'fa-cube', 'fa-diamond', 'fa-diamond',
+                'fa-plane', 'fa-plane', 'fa-leaf', 'fa-leaf'];
+
+/**
+ * Declare game variables and initialize timer.
+ */
+let opened = [];
+let moves = 0;
+let counter = document.querySelector('.moves');
+let timer = new Timer();
+
+/**
+ * Initalize game.
+ * init() is called when the restart button is pressed
+ * or when the page is loaded.
  */
 function init() {
 
-    cards = document.querySelectorAll('.card');
-    opened = [];
-    for (const card of cards) {
-        card.classList.remove('open', 'show', 'match');
-    }
-
     // Move Counter
-    counter = document.querySelector('.moves');
     moves = 0;
     counter.innerText = moves;
-
-    const deck = document.querySelector('.deck');
-    //deck.innerHTML = card
-   
     
-    // Shuffle cards randomly
-    const cardInit = shuffle(cards);
-    for (const cardHTML of cardInit) {
-        // console.log(cardHTML);
-     }
+    // Empty the current deck, shuffle, and rebuild the deck
+    let deck = document.getElementsByClassName('deck');
+    deck[0].innerHTML = '';
+    let shuffledDeck = shuffle(cardDeck);
 
-    // Initialize timer
-    timer = new Timer();
-    match();
+    // Create card list elements
+    for (let card of shuffledDeck) {
+        let li = document.createElement("li");
+        li.classList.add("card");
+        let i = document.createElement("i");
+        li.appendChild(i);
+        i.classList.add("fa");
 
-    // Star rating
-    stars = document.querySelector('.stars');
-    console.log(stars.length);
+        // Append the shuffled icons
+        i.classList.add(card);
+
+        deck[0].appendChild(li);
+    }
+    
+    let cards = document.getElementsByClassName('card');
+    match(cards);
+
+    // Star rating 
+    stars = document.querySelectorAll('.stars li');
+    for (const star of stars) {
+        star.style.visibility = "";
+    }
+
+    // Start the timer
+    timer.start();
+    timer.addEventListener('secondsUpdated', function (e) {
+        const time = document.getElementById('timer');
+        time.innerHTML = timer.getTimeValues().toString();
+    });
 }
 
+// Initialize game.
 init();
 
 /**
@@ -66,9 +95,8 @@ restartButton.addEventListener('click', function() {
     init();
 })
 
-
 /*
- * set up the event listener for a card. If a card is clicked:
+ * Set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
  *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
  *  - if the list already has another card, check to see if the two cards match
@@ -78,14 +106,7 @@ restartButton.addEventListener('click', function() {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
- function match() {
-    console.log(moves);
-    timer.start();
-    timer.addEventListener('secondsUpdated', function (e) {
-        const time = document.getElementById('timer');
-        time.innerHTML = timer.getTimeValues().toString();
-       // $('#basicUsage').html(timer.getTimeValues().toString());
-    });
+ function match(cards) {
     for (const card of cards){
         card.addEventListener('click', function() {
 
@@ -93,7 +114,6 @@ restartButton.addEventListener('click', function() {
         if (!card.classList.contains('open') && !card.classList.contains('show')) {
             card.classList.add('open', 'show');
             opened.push(card);
-            console.log(opened);
         }
         // Check if cards match
         if (opened.length == 2) {
@@ -119,8 +139,9 @@ restartButton.addEventListener('click', function() {
                }, 1500);
             
             }
-            moves++;
+            // Update move counter and assumes 2 cards equals 1 move
             counter.innerText = moves;
+            rateGame(moves);
         }
         // Handle winning scenario
         if(document.querySelectorAll('.match').length == 16){            
@@ -133,18 +154,48 @@ restartButton.addEventListener('click', function() {
  moves = 0;
 }
 
+/**
+ * Update star rating
+ * - Start with 3 stars
+ * - Remove 1 star when moves > 10
+ * - Remove another star when moves > 20
+ */
+function rateGame(moves) {
+    if(moves > 10) {
+        stars[2].style.visibility = "hidden";
+    }
+    if(moves > 20) {
+        stars[1].style.visibility = "hidden";
+    }
+    else if(moves <= 10) {
+        for (const star of stars) {
+            star.style.visibility = "";
+        }
+    }
+
+}
+
+/**
+ * Congratulations Popup
+ * - Ask if user wants to play again
+ * - Tell user how much time it took to win the game
+ * - Show the star rating
+ */
 $('#congrats-popup').on('show.bs.modal', function (event) {
     const time = document.getElementById('timer').innerText;
+    const prompt = "Would you like another game?";
     var popup = $(this);
-    popup.find('.modal-body').text('You completed the game in ' + time + '!');
+    popup.find('.modal-body').text('You completed the game in ' + time + '! ' + prompt);
+    playAgain();
 });
 
- function matchCards(opened) {
-    // const first = opened[0];
-    // const second = opened[1];
-    // console.log("first: " + first);
-    // console.log("second: " + second);
-    for (open of opened) {
-        console.log(opened.length);
-    }
- }
+/**
+ * Restarts and initializes the game 
+ * when the "Play Again" button is pressed on the popup.
+ */
+function playAgain() {
+    const playButton = document.getElementById('play-again');
+    playButton.addEventListener('click', function() {
+    init();
+    })
+}
