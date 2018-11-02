@@ -46,7 +46,7 @@ h1 {
     margin: auto;
 }
 
-/*
+/**
  * Styles for the deck of cards
  */
 
@@ -95,7 +95,7 @@ h1 {
     animation-duration: .75s;
 }
 
-/*
+/**
  * Styles for the Score Panel
  */
 
@@ -109,14 +109,16 @@ h1 {
     margin-bottom: 28px;
 }
 
-.score-panel .stars {
+.score-panel .stars,
+.modal-body .stars {
     margin: 0;
     padding: 0;
     display: inline-block;
     margin: 0 5px 0 0;
 }
 
-.score-panel .stars li {
+.score-panel .stars li,
+.modal-body .stars li {
     list-style: none;
     display: inline-block;
 }

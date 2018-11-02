@@ -221,9 +221,13 @@ function handleWin() {
  */
 $('#congrats-popup').on('show.bs.modal', function (event) {
     const time = document.getElementById('timer').innerText;
+    const rating = document.querySelector('.stars');
     const prompt = "Would you like another game?";
-    var popup = $(this);
-    popup.find('.modal-body').text('You completed the game in ' + time + '! ' + prompt);
+    let popupBody = 'You completed the game in ' + time + '! ';
+    popupBody += '<h6>Game rating:</h6>'
+    popupBody += '<ul class="stars">' + rating.innerHTML + '</ul>';
+    popupBody += '<p>' + prompt + '</p>';
+    $('.modal-body div').append(popupBody);
     playAgain();
 });
 
