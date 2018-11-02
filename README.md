@@ -3,11 +3,6 @@
 The memory game project is part of Udacity's Front-End Web Developer Nanodegree program.
 It explores the use of JavaScript, DOM selectors and event listeners. The game lets you match card pairs in a deck of 16 cards.
 
-## Table of Contents
-
-* [How To Play](#how-to-play)
-* [Game Dependencies](#game-dependencies)
-
 ## Installation
 
 Clone the GitHub repository and load the game in a browser.
