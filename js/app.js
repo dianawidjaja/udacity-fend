@@ -1,5 +1,5 @@
 /**
- * Create a list that holds all of your cards
+ * Create a list that holds all 16 cards
  */
 let cardDeck = ['fa-anchor', 'fa-anchor', 'fa-bicycle', 'fa-bicycle',
                 'fa-bolt', 'fa-bolt', 'fa-bomb', 'fa-bomb',
@@ -7,17 +7,21 @@ let cardDeck = ['fa-anchor', 'fa-anchor', 'fa-bicycle', 'fa-bicycle',
                 'fa-plane', 'fa-plane', 'fa-leaf', 'fa-leaf'];
 
 /**
- * Declare game variables and initialize timer.
+ * Declare game variables
  */
 let opened = [];
 let moves = 0;
 let counter = document.querySelector('.moves');
+
+/**
+ * Initialize timer
+ * - powered by easytimer.js
+ */
 let timer = new Timer();
 
 /**
- * Initalize game.
- * init() is called when the restart button is pressed
- * or when the page is loaded.
+ * Initalize game when page loads
+ * - init() is also called when the restart button is pressed
  */
 function init() {
 
@@ -81,8 +85,7 @@ function shuffle(cards) {
         cards[currentIndex] = cards[randomIndex];
         cards[randomIndex] = temporaryValue;
     }
-
-    return cards;
+  return cards;
 }
 
 /**
@@ -95,63 +98,85 @@ restartButton.addEventListener('click', function() {
     init();
 })
 
-/*
+/**
  * Set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
  *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
+ *  - if the cards match, lock the cards in the open position
+ * @param {object} cards - The 16 cards in the deck
  */
 
  function match(cards) {
     for (const card of cards){
         card.addEventListener('click', function() {
 
-        // Add card to opened array if it hasn't been opened 
-        if (!card.classList.contains('open') && !card.classList.contains('show')) {
-            card.classList.add('open', 'show');
-            opened.push(card);
-        }
-        // Check if cards match
-        if (opened.length == 2) {
-            const firstCard = opened[0].classList;
-            const secondCard = opened[1].classList;
-            const firstIcon = opened[0].firstElementChild.classList;
-            const secondIcon = opened[1].firstElementChild.classList;
+            // Match the opened cards
+            matchCards(card);
+        
+            // Check if cards match        
+            if (opened.length == 2) {
+                const firstCard = opened[0].classList;
+                const secondCard = opened[1].classList;
+                const firstIcon = opened[0].firstElementChild.classList;
+                const secondIcon = opened[1].firstElementChild.classList;
             // Cards match
-           if (firstIcon.value == secondIcon.value) {           
-                firstCard.add('match');
-                secondCard.add('match');
-                // Reset the opened array
-                opened = [];
-           }
-           // Cards don't match; Hide after showing briefly
-           else {
-               setTimeout(function() {
-                   for (const card of opened) {
-                        card.classList.remove('open', 'show');
-                   }
-                   // Reset the opened array
-                    opened = [];
-               }, 1500);
-            
+            if (firstIcon.value == secondIcon.value) {           
+                    firstCard.add('match');
+                    secondCard.add('match');
             }
-            // Update move counter and assumes 2 cards equals 1 move
-            counter.innerText = moves;
-            rateGame(moves);
-        }
-        // Handle winning scenario
-        if(document.querySelectorAll('.match').length == 16){            
-            $('#congrats-popup').modal();
-            timer.stop();
-        }
-    })
-     
+            // Cards don't match
+            else {
+                rejectCards(opened);
+            }
+            // Reset the opened array
+            opened = [];
+
+            // Update move counter 
+            updateMoves();
+            }
+            // Handle winning scenario
+            handleWin();
+    })  
  }
- moves = 0;
+ // Reset moves
+moves = 0;
+}
+
+/**
+ * Match two open cards
+ * - Display the card's symbol
+ * - Add the card to a list of opened cards
+ * @param {object} card - The card that the user opened
+ */
+function matchCards(card){
+    if (!card.classList.contains('open') && !card.classList.contains('show')) {
+        card.classList.add('open', 'show');
+        opened.push(card);
+    }
+}
+
+/**
+ * The cards do not match
+ * - Remove the cards from the list
+ * - Hide the card's symbol after showing for 1.5s
+ * @param {object[]} opened - The cards that are opened
+ */
+function rejectCards(opened) {
+    setTimeout(function() {
+        for (const card of opened) {
+             card.classList.remove('open', 'show');
+        }
+    }, 1500);
+}
+
+/**
+ * Increment the move counter and display it on the page 
+ * - Assumes 2 cards equals 1 move
+ * - Calls rateGames() to update star rating
+ */
+function updateMoves(){
+    moves++;
+    counter.innerText = moves;
+    rateGame(moves);
 }
 
 /**
@@ -159,6 +184,7 @@ restartButton.addEventListener('click', function() {
  * - Start with 3 stars
  * - Remove 1 star when moves > 10
  * - Remove another star when moves > 20
+ * @param {number} moves - The number of moves the player has taken, where 2 cards equals 1 move
  */
 function rateGame(moves) {
     if(moves > 10) {
@@ -176,6 +202,18 @@ function rateGame(moves) {
 }
 
 /**
+* All cards have matched 
+* - Display a message with the final score
+* - Stop the timer
+*/
+function handleWin() {
+    if(document.querySelectorAll('.match').length == 16){            
+        $('#congrats-popup').modal();
+        timer.stop();
+    }
+}
+
+/**
  * Congratulations Popup
  * - Ask if user wants to play again
  * - Tell user how much time it took to win the game
@@ -190,12 +228,12 @@ $('#congrats-popup').on('show.bs.modal', function (event) {
 });
 
 /**
- * Restarts and initializes the game 
- * when the "Play Again" button is pressed on the popup.
+ * The "Play Again" button on the popup is pressed
+ * - Restarts and initializes the game 
  */
 function playAgain() {
     const playButton = document.getElementById('play-again');
     playButton.addEventListener('click', function() {
-    init();
+        init();
     })
 }

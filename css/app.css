@@ -41,7 +41,7 @@ h1 {
 .moves {
     width: 20%;
 }
-.timer {
+#timer {
     font-size: 28px;
     margin: auto;
 }
@@ -162,11 +162,8 @@ ul:not(.browser-default) {
               transform: translateZ(-260px) rotateY(-180deg);
     }
   }
-  
-  
-  
 
-/** Animation by cssanimate.com **/
+/** Card match animation by cssanimate.com **/
 
 .deck .card.match{
     animation: animationFrames linear 1s;
